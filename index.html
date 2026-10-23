@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protocolos Institucionales – CDLA</title>
+  <link rel="stylesheet" href="assets/estilos.css">
+</head>
+<body>
+  <header class="encabezado">
+    <div class="contenido">
+      <a class="marca" href="index.html">
+        <div class="logo"></div>
+        <span>Clínica<b>de las Américas</b></span>
+      </a>
+      <div class="titulo">Protocolos y Pathways Institucionales</div>
+    </div>
+  </header>
+
+  <main class="principal">
+    <h1>Biblioteca de protocolos</h1>
+    <p class="sub">Seleccione un documento para verlo en línea o descargar el PDF oficial.</p>
+
+    <div class="filtros">
+      <input id="buscar" type="search" placeholder="Buscar protocolo…" autocomplete="off">
+      <select id="area"><option value="">Todas las áreas</option></select>
+      <select id="tipo"><option value="">Todos los tipos</option></select>
+    </div>
+
+    <div id="lista" class="grilla"></div>
+    <p id="vacio" class="vacio" hidden>No se encontraron protocolos.</p>
+  </main>
+
+  <footer class="pie">
+    <span>Clínica de las Américas · Av. Sexto Anillo esq. Av. Prolongación Beni N° 5100 · Santa Cruz de la Sierra</span>
+    <span>(+591) 77047522 · <a href="https://www.clinicadelasamericas.com.bo" target="_blank" rel="noopener">clinicadelasamericas.com.bo</a></span>
+  </footer>
+
+  <script src="assets/protocolos.js"></script>
+  <script>
+    const lista = document.getElementById("lista");
+    const vacio = document.getElementById("vacio");
+    const buscar = document.getElementById("buscar");
+    const area = document.getElementById("area");
+    const tipo = document.getElementById("tipo");
+
+    function llenarSelect(select, campo) {
+      [...new Set(PROTOCOLOS.map(p => p[campo]))].sort().forEach(valor => {
+        select.add(new Option(valor, valor));
+      });
+    }
+
+    function normalizar(texto) {
+      return texto.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+    }
+
+    function mostrar() {
+      const q = normalizar(buscar.value);
+      const filtrados = PROTOCOLOS.filter(p =>
+        (!area.value || p.area === area.value) &&
+        (!tipo.value || p.tipo === tipo.value) &&
+        normalizar(p.titulo + " " + p.descripcion + " " + p.area).includes(q)
+      );
+
+      lista.innerHTML = "";
+      filtrados.forEach(p => {
+        const tarjeta = document.createElement("article");
+        tarjeta.className = "tarjeta";
+        tarjeta.innerHTML = `
+          <div class="etiquetas">
+            <span class="etiqueta"></span>
+            <span class="etiqueta area"></span>
+          </div>
+          <h2></h2>
+          <p></p>
+          <div class="acciones">
+            <a class="boton" href="${encodeURI(p.html)}">Ver protocolo</a>
+            <a class="boton primario" href="${encodeURI(p.pdf)}" download>Descargar PDF</a>
+          </div>`;
+        const [etTipo, etArea] = tarjeta.querySelectorAll(".etiqueta");
+        etTipo.textContent = `${p.tipo} ${p.version}`;
+        etArea.textContent = p.area;
+        tarjeta.querySelector("h2").textContent = p.titulo;
+        tarjeta.querySelector("p").textContent = p.descripcion;
+        lista.appendChild(tarjeta);
+      });
+      vacio.hidden = filtrados.length > 0;
+    }
+
+    llenarSelect(area, "area");
+    llenarSelect(tipo, "tipo");
+    [buscar, area, tipo].forEach(el => el.addEventListener("input", mostrar));
+    mostrar();
+  </script>
+</body>
+</html>
