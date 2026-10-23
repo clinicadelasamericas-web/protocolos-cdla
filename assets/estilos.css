@@ -1,7 +1,7 @@
 :root {
-  --azul: #0f5c7a;
-  --celeste: #1aa3c8;
-  --naranja: #f08a24;
+  --azul: #0e4d6b;
+  --celeste: #37b0cc;
+  --naranja: #f7861e;
   --fondo: #f4f7f9;
   --tarjeta: #ffffff;
   --texto: #1d2b33;
@@ -48,13 +48,7 @@ a { color: var(--azul); }
   text-decoration: none;
   color: var(--azul);
 }
-.marca .logo {
-  width: 38px; height: 38px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--celeste) 0 55%, var(--naranja) 55% 100%);
-}
-.marca span { font-size: 15px; line-height: 1.15; }
-.marca b { display: block; font-size: 17px; }
+.marca .logo { height: 52px; width: auto; display: block; }
 .encabezado .titulo {
   flex: 1;
   min-width: 220px;
